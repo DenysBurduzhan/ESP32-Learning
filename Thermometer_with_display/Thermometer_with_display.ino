@@ -68,24 +68,16 @@ void loop()
 
     if((elapsed / 1000) % 2 != 0){
     int temp = (int)t;
-
-    int digitOneT = temp / 10;
-    int digitTwoT = temp % 10;
-
-    disp.display(0, digitOneT);
-    disp.display(1, digitTwoT);
-    disp.display(2, 12);
-    disp.display(3, 0);
+    showValue(temp, 12);
     }else{
       int hum = (int)h;
-
-    int digitOneH = hum / 10;
-    int digitTwoH = hum % 10;
-
-    disp.display(0, digitOneH);
-    disp.display(1, digitTwoH);
-    disp.display(2, 15);
+      showValue(hum, 15);
+    }
+    }
+}
+void showValue(int value, int symbol){
+    disp.display(0, value / 10);
+    disp.display(1, value % 10);
+    disp.display(2, symbol);
     disp.display(3, 0);
-    }
-    }
 }
