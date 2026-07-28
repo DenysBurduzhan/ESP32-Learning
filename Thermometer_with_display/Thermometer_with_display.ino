@@ -57,13 +57,7 @@ void loop()
         return;
     }
 
-    Serial.print("Humidity: ");
-    Serial.print(h);
-    Serial.print("%   ");
-
-    Serial.print("Temperature: ");
-    Serial.print(t);
-    Serial.println(" C");
+    printInfo(t, h);
     uint32_t elapsed = millis() - startTime;
 
     if((elapsed / 1000) % 2 != 0){
@@ -80,4 +74,14 @@ void showValue(int value, int symbol){
     disp.display(1, value % 10);
     disp.display(2, symbol);
     disp.display(3, 0);
+}
+
+void printInfo(int t, int h){
+    Serial.print("Humidity: ");
+    Serial.print(h);
+    Serial.print("%   ");
+
+    Serial.print("Temperature: ");
+    Serial.print(t);
+    Serial.println(" C");
 }
