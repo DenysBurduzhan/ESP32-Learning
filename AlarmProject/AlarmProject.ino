@@ -16,7 +16,7 @@ void IRAM_ATTR motionISR()
 }
 
 void setup() {
-  attachInterrupt(switchPin, motionISR, RISING);
+  attachInterrupt(switchPin, motionISR, HIGH);
   pinMode(LEDpin, OUTPUT);
   pinMode(switchPin, INPUT);
 }
@@ -34,7 +34,12 @@ void counter(){
 
 void alarm(){
   if(motionDetected){
+    uint32_t elapsedForAlarm = millis() - startAlarmAndSignalTime;
+    if((elapsedForAlarm / 1000) % 2 == 0){
     tone(piezoPin, 1500, 500);
+    }else{
+      noTone(piezoPin);
+    }
   }
 }
 void LEDSignal(){
@@ -49,12 +54,13 @@ void LEDSignal(){
   }
 
 void alarmOff(){
-  uint32_t currentAlarmAndSignalTime = millis();
-  if(currentAlarmAndSignalTime - startAlarmAndSignalTime >= interval){
-  motionDetected = false;
-  noTone(piezoPin);
-  digitalWrite(LEDpin, LOW);
-  }
+  if (digitalRead(switchPin) == LOW &&
+    millis() - startAlarmAndSignalTime >= interval)
+{
+    motionDetected = false;
+    noTone(piezoPin);
+    digitalWrite(LEDpin, LOW);
+}
 }
 
 void process(){
