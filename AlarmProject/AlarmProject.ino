@@ -39,12 +39,14 @@ void alarm(){
 }
 void LEDSignal(){
   if(motionDetected){
+    uint32_t elapsed = millis() - startAlarmAndSignalTime;
+    if((elapsed / 1000) % 2 == 0){
     digitalWrite(LEDpin, HIGH);
-    delay(1000);
-    digitalWrite(LEDpin, LOW);
-    delay(1000);
+    }else{
+      digitalWrite(LEDpin, LOW);
+    }
+    }
   }
-}
 
 void alarmOff(){
   uint32_t currentAlarmAndSignalTime = millis();
