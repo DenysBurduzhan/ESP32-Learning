@@ -30,7 +30,7 @@ void setup()
     disp.init();
     disp.set(2);
 
-    Timer0_Cfg = timerBegin(2000000);
+    Timer0_Cfg = timerBegin(1000000);
 
     if (Timer0_Cfg == NULL)
     {
@@ -39,7 +39,7 @@ void setup()
     }
 
     timerAttachInterrupt(Timer0_Cfg, &Timer0_ISR);
-    timerAlarm(Timer0_Cfg, 2000000, true, 0);
+    timerAlarm(Timer0_Cfg, 1000000, true, 0);
     startTime = millis();
 }
 
