@@ -6,7 +6,7 @@
 
 Servo myServo;
 int pos = 0;   
-float duration,distance;
+int duration,distance;
 void setup(){
 Serial.begin(9600);
 Serial.println("Radar Start");
@@ -16,20 +16,30 @@ myServo.attach(servoPin);
 }
 
 void loop() {
-  for (pos = 0; pos <= 180; pos += 1) { 
+  for (pos = 0; pos <= 180; pos += 3) { 
     myServo.write(pos);             
     delay(60); 
-    dist_calc(pos);
   }
  
-  for (pos = 180; pos >= 0; pos -= 1) { 
+  for (pos = 180; pos >= 0; pos -= 3) { 
     myServo.write(pos);              
     delay(60);
-    dist_calc(pos);
+  }
+
+  int dis = dist_calc();
+  detect(dis);
+}
+
+void detect(int dis){
+  if(dis > 15){
+    Serial.println("No objects on the way");
+  }else{
+    Serial.println(dis);
+    Serial.println("Distance to object is " + String(dis));
   }
 }
 
-void dist_calc(int pos){
+int dist_calc(){
   digitalWrite(trigPin,LOW);
   delayMicroseconds(2);
   digitalWrite(trigPin,HIGH);
@@ -37,8 +47,6 @@ void dist_calc(int pos){
   digitalWrite(trigPin,LOW);
   duration = pulseIn(echoPin, HIGH, 30000);
   distance = duration * 0.0343 / 2.0;
-  Serial.print(pos); 
-  Serial.print(","); 
-  Serial.println(distance);
+  return distance;
 }
 
