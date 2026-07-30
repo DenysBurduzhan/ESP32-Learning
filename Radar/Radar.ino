@@ -3,10 +3,9 @@
 #define trigPin  27
 #define echoPin  26
 #define servoPin 25
-
-Servo myServo;
-int pos = 0;   
+Servo myServo;  
 int duration,distance;
+
 void setup(){
 Serial.begin(9600);
 Serial.println("Radar Start");
@@ -16,28 +15,32 @@ myServo.attach(servoPin);
 }
 
 void loop() {
-  for (pos = 0; pos <= 180; pos += 3) { 
-    myServo.write(pos);             
-    delay(60); 
-  }
- 
-  for (pos = 180; pos >= 0; pos -= 3) { 
-    myServo.write(pos);              
-    delay(60);
-  }
-
-  int dis = dist_calc();
-  detect(dis);
+  findPos();
+  
 }
 
-void detect(int dis){
-  if(dis > 15){
-    Serial.println("No objects on the way");
-  }else{
-    Serial.println(dis);
-    Serial.println("Distance to object is " + String(dis));
+void printStepAndDistance(int value , int step){
+  if (value <= 15 && value > 0){
+      Serial.println(step);
+      delay(100);
+      Serial.println("Distance: " + String(value));
   }
 }
+
+void findPos(){
+  for (int step = 0; step <= 180; step += 3){
+  myServo.write(step);
+  delay(60);
+  printStepAndDistance(dist_calc(), step);
+  }
+
+  for (int step = 180; step >= 0; step -= 3){
+   myServo.write(step);
+   delay(60);
+   printStepAndDistance(dist_calc(), step);
+  }
+}
+
 
 int dist_calc(){
   digitalWrite(trigPin,LOW);
