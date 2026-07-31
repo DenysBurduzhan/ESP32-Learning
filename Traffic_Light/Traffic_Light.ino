@@ -2,8 +2,13 @@
 #define yellowLED 12
 #define redLED 13
 #define greenLED 14
-
+#define button 26
 uint32_t startTime;
+volatile bool humanPresent = false;
+
+void IRAM_ATTR ISR(){
+  humanPresent = true;
+}
 
 void setup() {
   Serial.begin(9600);
@@ -11,11 +16,26 @@ void setup() {
   pinMode(13, OUTPUT);
   pinMode(14, OUTPUT);
   startTime = millis();
+  pinMode(button, INPUT);
+  digitalWrite(button, PULLUP);
+  attachInterrupt(digitalPinToInterrupt(button), ISR, FALLING);
+}
+
+void buttonClicked(){
+  uint32_t currentTime = millis();
+    digitalWrite(12, LOW);
+    digitalWrite(13, HIGH);
+    digitalWrite(14, LOW);
+  if(currentTime - startTime > 10000){
+    humanPresent = false;
+    startTime = currentTime;
+  }
 }
 
 void loop() {
-uint32_t currentTime = millis();
 
+uint32_t currentTime = millis();
+if(!humanPresent){
 if(currentTime - startTime <= 1000 ){
   digitalWrite(13, LOW);
   digitalWrite(14, HIGH);
@@ -27,6 +47,9 @@ if(currentTime - startTime <= 1000 ){
   digitalWrite(13, HIGH);
 }else {
   startTime = currentTime;
+}
+}else{
+  buttonClicked();
 }
 }
 
