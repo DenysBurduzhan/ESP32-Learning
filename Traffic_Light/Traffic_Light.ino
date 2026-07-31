@@ -3,7 +3,7 @@
 #define redLED 13
 #define greenLED 14
 
-
+uint32_t startTime;
 
 void setup() {
   Serial.begin(9600);
@@ -14,14 +14,20 @@ void setup() {
 }
 
 void loop() {
+uint32_t currentTime = millis();
+
+if(currentTime - startTime <= 1000 ){
   digitalWrite(13, LOW);
   digitalWrite(14, HIGH);
-  delayMicroseconds(1000000);
+}else if(currentTime - startTime <= 2000){
   digitalWrite(14, LOW);
   digitalWrite(12, HIGH);
-  delayMicroseconds(1000000);
+}else if(currentTime - startTime <= 3000){
   digitalWrite(12, LOW);
   digitalWrite(13, HIGH);
-  delayMicroseconds(1000000);
+}else {
+  startTime = currentTime;
 }
+}
+
 
