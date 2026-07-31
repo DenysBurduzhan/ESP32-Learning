@@ -3,53 +3,70 @@
 #define trigPin  27
 #define echoPin  26
 #define servoPin 25
-Servo myServo;  
-int duration,distance;
 
-void setup(){
-Serial.begin(9600);
-Serial.println("Radar Start");
-pinMode(echoPin, INPUT);
-pinMode(trigPin, OUTPUT);
-myServo.attach(servoPin);
+Servo myServo;
+
+void setup() {
+  Serial.begin(115200);
+  Serial.println("Radar Start");
+
+  pinMode(echoPin, INPUT);
+  pinMode(trigPin, OUTPUT);
+
+  myServo.attach(servoPin);
 }
 
 void loop() {
-  findPos();
-  
+  scanForward();
+  scanBackward();
+}
+void printResult(int step, int dist){
+    Serial.print("Angle: ");
+    Serial.print(step);
+    Serial.print(" Distance: ");
+    Serial.println(dist);
 }
 
-void printStepAndDistance(int value , int step){
-  if (value <= 15 && value > 0){
-      Serial.println(step);
-      delay(100);
-      Serial.println("Distance: " + String(value));
+void scanForward() {
+  for (int step = 0; step <= 180; step += 3) {
+    myServo.write(step);
+    delay(60);
+
+    int dist = dist_calc();
+
+    if (dist > 0 && dist <= 15) {
+      printResult(step, dist);
+    }
   }
 }
 
-void findPos(){
-  for (int step = 0; step <= 180; step += 3){
-  myServo.write(step);
-  delay(60);
-  printStepAndDistance(dist_calc(), step);
-  }
+void scanBackward() {
+  for (int step = 180; step >= 0; step -= 3) {
+    myServo.write(step);
+    delay(60);
 
-  for (int step = 180; step >= 0; step -= 3){
-   myServo.write(step);
-   delay(60);
-   printStepAndDistance(dist_calc(), step);
+    int dist = dist_calc();
+
+    if (dist > 0 && dist <= 15) {
+      printResult(step, dist);
+    }
   }
 }
 
-
-int dist_calc(){
-  digitalWrite(trigPin,LOW);
+int dist_calc() {
+  digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
-  digitalWrite(trigPin,HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin,LOW);
-  duration = pulseIn(echoPin, HIGH, 30000);
-  distance = duration * 0.0343 / 2.0;
-  return distance;
-}
 
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+
+  digitalWrite(trigPin, LOW);
+
+  long duration = pulseIn(echoPin, HIGH, 30000);
+
+  if (duration == 0) {
+    return -1; 
+  }
+
+  return duration * 0.0343 / 2.0;
+}
