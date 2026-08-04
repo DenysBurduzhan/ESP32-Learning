@@ -58,7 +58,8 @@ void writeToSerialValueIfGasPresent(){
 void turnOn(){
   if(gasPresent){
     uint16_t value = gasDetecting();
-    soundSignal(value);
+    uint16_t freq = map(value, 0, 4095, 500, 3000);
+    soundSignal(freq);
     ledSignal();
     writeToSerialValueIfGasPresent();
   }
