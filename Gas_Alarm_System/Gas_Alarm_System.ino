@@ -1,4 +1,4 @@
-
+#include <WiFi.h>
 #define ledPin 32
 #define piezoPin 13
 #define MQ_7_DO 26
@@ -8,12 +8,17 @@ uint32_t interval = 10000;
 volatile bool gasPresent = false;
 uint16_t piezoDelay = 1000;
 
+const char* ssid = "HUAWEI-N1ATO4";
+const char* password = "43e1429mh4";
+
 void IRAM_ATTR gasCheckerISR(){
   gasPresent = true;
 }
 
 void setup() {
   Serial.begin(9600);
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
   pinMode(ledPin, OUTPUT);
   attachInterrupt(MQ_7_AO, gasCheckerISR, RISING);
   startSysTime = millis();
