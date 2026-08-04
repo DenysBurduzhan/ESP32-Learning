@@ -28,6 +28,8 @@ void setup() {
   // Serial.print("Local ESP32 IP: ");
   // Serial.println(WiFi.localIP());
   pinMode(ledPin, OUTPUT);
+  pinMode(MQ_7_DO, INPUT);
+  pinMode(piezoPin, OUTPUT);
   attachInterrupt(MQ_7_DO, gasCheckerISR, RISING);
   startSysTime = millis();
 }
