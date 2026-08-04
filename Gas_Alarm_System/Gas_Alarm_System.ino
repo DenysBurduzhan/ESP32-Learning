@@ -19,8 +19,16 @@ void setup() {
   Serial.begin(9600);
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
+  Serial.println("\nConnecting to WiFi Network ..");
+  while(WiFi.status() != WL_CONNECTED){
+        Serial.print(".");
+        delay(100);
+  }
+  // Serial.println("\nConnected to the WiFi network");
+  // Serial.print("Local ESP32 IP: ");
+  // Serial.println(WiFi.localIP());
   pinMode(ledPin, OUTPUT);
-  attachInterrupt(MQ_7_AO, gasCheckerISR, RISING);
+  attachInterrupt(MQ_7_DO, gasCheckerISR, RISING);
   startSysTime = millis();
 }
 
@@ -59,9 +67,9 @@ void process(){
   uint32_t currentSysTime = millis();
   if(currentSysTime - startSysTime <= interval){
     startSysTime = currentSysTime;
-    turnOn();
-  }else{
     turnOff();
+  }else{
+    turnOn();
   }
 }
 
