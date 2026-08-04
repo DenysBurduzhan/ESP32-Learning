@@ -30,7 +30,7 @@ void setup() {
   pinMode(ledPin, OUTPUT);
   pinMode(MQ_7_DO, INPUT);
   pinMode(piezoPin, OUTPUT);
-  attachInterrupt(MQ_7_DO, gasCheckerISR, RISING);
+  attachInterrupt(MQ_7_DO, gasCheckerISR, FALLING);
   startSysTime = millis();
 }
 
