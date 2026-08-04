@@ -49,7 +49,7 @@ void ledSignal(){
   digitalWrite(ledPin, HIGH);
 }
 void writeToSerialValueIfGasPresent(){
-  int analogValue = digitalRead(MQ_7_AO);
+  int analogValue = analogRead(MQ_7_AO);
   Serial.println(analogValue);
   int logicValue = digitalRead(MQ_7_DO);
   Serial.println(logicValue);
