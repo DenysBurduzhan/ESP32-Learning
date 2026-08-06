@@ -2,9 +2,9 @@
 #include <iostream>
 #include <map>
 
-#define ROWS  4
-#define COLS  4
-#define piezoPin 13
+constexpr uint8_t ROWS = 4;
+constexpr uint8_t COLS = 4;
+constexpr uint8_t piezoPin = 13;
 
 char keyMap[ROWS][COLS] = {
   {'1','2','3', 'A'},
@@ -37,7 +37,6 @@ const std::map<char, uint16_t> notes = {
 
 void setup() {
   Serial.begin(115200);
-  pinMode(piezoPin, OUTPUT);
 }
 
 uint16_t getFreq(char key){
@@ -51,6 +50,8 @@ uint16_t getFreq(char key){
 void play(uint16_t freq){
   Serial.println("play");
   Serial.println(freq);
+  if (freq == 0)
+        return;
   tone(piezoPin, freq, 200);
 }
 
