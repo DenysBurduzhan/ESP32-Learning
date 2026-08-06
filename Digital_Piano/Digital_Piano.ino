@@ -52,8 +52,9 @@ void play(uint16_t freq){
   Serial.println(freq);
   if (freq == 0)
         return;
-  tone(piezoPin, freq, 200);
+    tone(piezoPin, freq, 200);
 }
+
 
 void loop() {
   char key = keypad.getKey();
