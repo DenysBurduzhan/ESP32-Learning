@@ -1,5 +1,9 @@
 #include <ESP32Servo.h>
 // using mg90s 180°
+
+//Unfortunately, I only had one servo, 
+//so I used the X-axis to control it and the Y-axis solely 
+//to output the result to the serial monitor.
 #define VRY_PIN 33
 #define VRX_PIN 25
 #define SERVO_X_PIN 13 
