@@ -7,9 +7,6 @@
 
 Servo myServo;
 
-int valueX = 0; 
-int valueY = 0;
-int bValue = 0;
 
 uint32_t start;
 void setup() {
