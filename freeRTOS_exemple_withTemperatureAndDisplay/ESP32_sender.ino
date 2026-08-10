@@ -1,14 +1,20 @@
 #include "DHT.h"
 #include "TM1637.h"
 
+#define RXD2 16
+#define TXD2 17
+
 #define DHTPIN   13
 #define DHTTYPE  DHT11
 
 #define CLK_PIN  27
 #define DIO_PIN  26
 
+HardwareSerial mySerial(2);
+
 QueueHandle_t sensorQueue = NULL;
 QueueHandle_t printQueue = NULL;
+QueueHandle_t UARTQueue = NULL;
 
 DHT dht(DHTPIN, DHTTYPE);
 TM1637 disp(CLK_PIN, DIO_PIN);
@@ -27,12 +33,27 @@ void SensorTask(void *pvParameters){
     if (isnan(data.temperature) || isnan(data.humidity))
     {
     Serial.println("Error reading from DHT");
+    mySerial.println("Sent: Error reading from DHT");
     vTaskDelay(1000 / portTICK_PERIOD_MS);
     continue;
     }
     xQueueSend(sensorQueue, &data, portMAX_DELAY);
     xQueueSend(printQueue, &data, portMAX_DELAY);
+    xQueueSend(UARTQueue, &data, portMAX_DELAY);
     vTaskDelay(1000 / portTICK_PERIOD_MS);
+  }
+}
+void TaskUARTTx(void *pvParameters){
+  while(1){
+    SensorData data;
+    if(xQueueReceive(UARTQueue, &data, portMAX_DELAY)){
+      int temp = (int)data.temperature;
+      int hum = (int)data.humidity;
+      mySerial.println("t = " + String(temp) + " ; " + "h = " + String(hum));
+      mySerial.println("Sent: " + String(temp));
+      mySerial.println("Sent: " + String(hum));
+      vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
   }
 }
 
@@ -75,9 +96,11 @@ void printInfoTask(void *pvParameters){
 void setup()
 {
     Serial.begin(115200);
+    mySerial.begin(9600, SERIAL_8N1, RXD2, TXD2);
     sensorQueue = xQueueCreate(5, sizeof(SensorData));
     printQueue = xQueueCreate(5, sizeof(SensorData));
-    if (sensorQueue == NULL || printQueue == NULL) {
+    UARTQueue = xQueueCreate(5, sizeof(SensorData));
+    if (sensorQueue == NULL || printQueue == NULL || UARTQueue == NULL) {
     Serial.println("Failed to create queue!");
     while (1);
   }
@@ -108,6 +131,16 @@ void setup()
   xTaskCreatePinnedToCore(
     printInfoTask,
     "printInfoTask",
+    4000,  
+    NULL,
+    1,
+    NULL,
+    1  
+  );
+
+  xTaskCreatePinnedToCore(
+    TaskUARTTx,
+    "TaskUARTTx",
     4000,  
     NULL,
     1,
