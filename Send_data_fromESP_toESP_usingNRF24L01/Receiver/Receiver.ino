@@ -9,7 +9,7 @@ const byte thisSlaveAddress[5] = {'R','x','A','A','A'};
 
 RF24 radio(CE_PIN, CSN_PIN);
 
-char dataReceived[10];
+int dataReceived[2];
 bool newData = false;
 
 void setup() {
@@ -38,7 +38,7 @@ void getData() {
 void showData() {
     if (newData == true) {
         Serial.print("Data received ");
-        Serial.println(dataReceived);
+        Serial.println("Humidity: " + String(dataReceived[0]) + " Temperature: " + String(dataReceived[1]));
         newData = false;
     }
 }
