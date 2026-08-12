@@ -49,18 +49,6 @@ void loop() {
 }
 
 void send() {
-
-    
-    radio.write( &dataToSend, sizeof(dataToSend) );
-        
-    Serial.println("Data Sent: ");
-    Serial.println("Humidity: " + String(dataToSend[0]) + " Temperature: " + String(dataToSend[1]));
-    Serial.println("  Acknowledge received");
-    updateMessage();
-}
-
-
-void updateMessage() {
     hum = dht.readHumidity();
     temp = dht.readTemperature();
 
@@ -69,7 +57,15 @@ void updateMessage() {
         Serial.println("Error reading from DHT");
         return;
     }
-    
     dataToSend[0] = (int) hum;
     dataToSend[1] = (int) temp;
+    bool res = radio.write( &dataToSend, sizeof(dataToSend) );
+    if(res){        
+    Serial.println("Data Sent: ");
+    Serial.println("Humidity: " + String(dataToSend[0]) + " Temperature: " + String(dataToSend[1]));
+    }else{
+        Serial.println("  Fail");
+        return;
+    }
 }
+
