@@ -17,9 +17,11 @@ const byte slaveAddress[5] = {'R','x','A','A','A'};
 
 RF24 radio(CE_PIN, CSN_PIN);
 
-int dataToSend[2];
-float temp;
-float hum;
+
+typedef struct{
+    float temp;
+    float hum;
+}SensorData;
 
 
 unsigned long currentMillis;
@@ -49,20 +51,19 @@ void loop() {
 }
 
 void send() {
-    hum = dht.readHumidity();
-    temp = dht.readTemperature();
+    SensorData data;
+    data.hum = dht.readHumidity();
+    data.temp = dht.readTemperature();
 
-    if (isnan(hum) || isnan(temp))
+    if (isnan(data.hum) || isnan(data.temp))
     {
         Serial.println("Error reading from DHT");
         return;
-    }
-    dataToSend[0] = (int) hum;
-    dataToSend[1] = (int) temp;
-    bool res = radio.write( &dataToSend, sizeof(dataToSend) );
+    
+    bool res = radio.write( &data, sizeof(data) );
     if(res){        
     Serial.println("Data Sent: ");
-    Serial.println("Humidity: " + String(dataToSend[0]) + " Temperature: " + String(dataToSend[1]));
+    Serial.println("Humidity: " + String(data.hum) + " Temperature: " + String(data.temp));
     }else{
         Serial.println("  Fail");
         return;
