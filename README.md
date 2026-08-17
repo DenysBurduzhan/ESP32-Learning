@@ -1,4 +1,4 @@
-# ESP32 Learning Projects
+# ESP32 Projects
 
 A collection of practical ESP32 projects created while learning embedded systems programming, hardware peripherals, interrupts, timers, sensors, displays, PWM control, and FreeRTOS.
 
