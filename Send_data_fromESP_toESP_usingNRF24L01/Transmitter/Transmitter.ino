@@ -23,6 +23,7 @@ typedef struct{
     float hum;
 }SensorData;
 
+SensorData data;
 
 unsigned long currentMillis;
 unsigned long prevMillis;
@@ -51,7 +52,6 @@ void loop() {
 }
 
 void send() {
-    SensorData data;
     data.hum = dht.readHumidity();
     data.temp = dht.readTemperature();
 
@@ -59,6 +59,7 @@ void send() {
     {
         Serial.println("Error reading from DHT");
         return;
+    }
     
     bool res = radio.write( &data, sizeof(data) );
     if(res){        

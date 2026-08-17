@@ -14,6 +14,7 @@ typedef struct{
     float hum;
 }ReceivedData;
 
+ReceivedData data;
 bool newData = false;
 
 void setup() {
@@ -33,7 +34,6 @@ void loop() {
 }
 
 void getData() {
-    ReceivedData data;
     if ( radio.available() ) {
         radio.read( &data, sizeof(data) );
         newData = true;
