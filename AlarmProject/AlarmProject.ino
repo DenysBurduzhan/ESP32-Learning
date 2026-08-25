@@ -1,3 +1,6 @@
+#include "soc/gpio_reg.h"
+#include "soc/io_mux_reg.h"
+
 const uint16_t LEDpin = 13;
 const uint16_t switchPin = 25;
 const uint16_t piezoPin = 32;
@@ -17,8 +20,9 @@ void IRAM_ATTR motionISR()
 
 void setup() {
   attachInterrupt(switchPin, motionISR, HIGH);
-  pinMode(LEDpin, OUTPUT);
-  pinMode(switchPin, INPUT);
+  REG_SET_BIT(GPIO_ENABLE_REG, (1 << LEDpin));
+  REG_CLR_BIT(GPIO_ENABLE_REG, (1 << switchPin));
+  REG_CLR_BIT(GPIO_OUT_REG, (1 << LEDpin));
 }
 
 void loop() {
@@ -46,15 +50,16 @@ void LEDSignal(){
   if(motionDetected){
     uint32_t elapsed = millis() - startAlarmAndSignalTime;
     if((elapsed / 1000) % 2 == 0){
-    digitalWrite(LEDpin, HIGH);
+    REG_CLR_BIT(GPIO_OUT_REG, (1 << LEDpin));
     }else{
-      digitalWrite(LEDpin, LOW);
+       REG_SET_BIT(GPIO_OUT_REG, (1 << LEDpin));
     }
     }
   }
 
 void alarmOff(){
-  if (digitalRead(switchPin) == LOW &&
+  uint32_t reg_state = REG_READ(GPIO_IN_REG);
+  if (!(reg_state & (1 << switchPin)) &&
     millis() - startAlarmAndSignalTime >= interval)
 {
     motionDetected = false;
