@@ -1,18 +1,53 @@
 #include <Arduino.h>
+#include <Adafruit_MPU6050.h>
+#include <Adafruit_Sensor.h>
+#include <Wire.h>
 
-// put function declarations here:
-int myFunction(int, int);
+Adafruit_MPU6050 mpu;
 
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+void setup()
+{
+    Serial.begin(115200);
+    Wire.begin(21, 22);
+    Serial.println("MPU6050 test");
+    if (!mpu.begin())
+    {
+        Serial.println("Failed to find MPU6050 chip");
+        while (1)
+        {
+            delay(10);
+        }
+    }
+   Serial.println("MPU6050 Found!");
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-}
+void loop()
+{
+    sensors_event_t a, g, temp;
+    mpu.getEvent(&a, &g, &temp);
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+    Serial.print("Accel X: ");
+    Serial.print(a.acceleration.x);
+
+    Serial.print("  Y: ");
+    Serial.print(a.acceleration.y);
+
+    Serial.print("  Z: ");
+    Serial.println(a.acceleration.z);
+
+    Serial.print("Gyro X: ");
+    Serial.print(g.gyro.x);
+
+    Serial.print("  Y: ");
+    Serial.print(g.gyro.y);
+
+    Serial.print("  Z: ");
+    Serial.println(g.gyro.z);
+
+    Serial.print("Temperature: ");
+    Serial.println(temp.temperature);
+
+    Serial.println();
+
+    delay(500);
 }
