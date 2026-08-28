@@ -19,7 +19,8 @@ void setup() {
             (1 << redLED) |
             (1 << greenLED));
   startTime = millis();
-  pinMode(button, INPUT_PULLUP);
+  REG_CLR_BIT(GPIO_ENABLE_REG, (1 << button));
+  REG_SET_BIT(button, FUN_PU);
   attachInterrupt(digitalPinToInterrupt(button), ISR, FALLING);
 }
 
