@@ -22,7 +22,7 @@
   "idf.openOcdConfigs": [
     "board/esp32-wrover-kit-3.3v.cfg"
   ],
-  "idf.portWin": "detect",
+  "idf.portWin": "COM3",
   "idf.currentSetup": "C:\\esp\\v6.1\\esp-idf",
   "idf.customExtraVars": {
     "IDF_TARGET": "esp32"
@@ -32,5 +32,6 @@
     "--background-index",
     "--query-driver=**",
     "--compile-commands-dir=c:\\Users\\38066\\OneDrive\\Documents\\GitHub\\ESP32-Learning\\Traffic_Light\\Traffic_Light(ESP-IDF)\\build"
-  ]
+  ],
+  "idf.flashType": "UART"
 }
