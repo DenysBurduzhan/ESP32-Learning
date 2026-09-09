@@ -5,6 +5,7 @@
 #include <driver/gpio.h>
 #include <esp_timer.h>
 #include "sdkconfig.h"
+#include "GPIO_driver/GPIO.hpp"
 
 #define yellowLED GPIO_NUM_12
 #define redLED GPIO_NUM_13
@@ -26,9 +27,9 @@ int i = 0;
 
 void process(gpio_num_t led_pin, uint32_t delayTime)
 {
-    gpio_set_level(led_pin, 1);
+    GPIO::setOutput(led_pin);
     vTaskDelay(pdMS_TO_TICKS(delayTime));
-    gpio_set_level(led_pin, 0);
+    GPIO::clearOutput(led_pin);
     i = (i + 1) % ledsLength;
 }
 
@@ -54,9 +55,11 @@ extern "C" void app_main()
 };
     gpio_config(&io_conf);
 
-    gpio_set_direction(yellowLED, GPIO_MODE_OUTPUT);
-    gpio_set_direction(redLED, GPIO_MODE_OUTPUT);
-    gpio_set_direction(greenLED, GPIO_MODE_OUTPUT);
+    for (int j = 0; j < ledsLength; j++){
+        GPIO::initGPIO(leds[j]);
+        GPIO::enableOutput(leds[j]);
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
     
     gpio_install_isr_service(0);
     gpio_isr_handler_add(button, button_isr_handler, NULL);
