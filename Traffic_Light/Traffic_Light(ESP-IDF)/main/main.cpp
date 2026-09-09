@@ -14,14 +14,12 @@
 
 volatile bool humanPresent = false;
 volatile uint32_t interruptCount = 0;
-static volatile uint64_t last_isr_time = 0;
 
 uint32_t delayTime = 1000;
 
 gpio_num_t leds[] = {yellowLED, redLED, greenLED};
 uint16_t ledsLength = sizeof(leds) / sizeof(leds[0]);
 
-QueueHandle_t button_queue;
 
 int i = 0;
 
@@ -45,7 +43,6 @@ static void IRAM_ATTR button_isr_handler(void *arg)
 
 extern "C" void app_main()
 {
-    button_queue = xQueueCreate(10, sizeof(uint32_t));
     gpio_config_t io_conf = {
     .pin_bit_mask = (1ULL << button),
     .mode = GPIO_MODE_INPUT,
